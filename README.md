@@ -1,3 +1,3 @@
 # Развертывание
 
- 1. `composer install`
+ `composer install`
