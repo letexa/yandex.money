@@ -1,0 +1,6 @@
+{
+    "require": {
+        "twbs/bootstrap": "^4.2",
+        "codeguy/upload": "^1.3"
+    }
+}

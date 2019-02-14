@@ -1,0 +1,1 @@
+<p><strong><?php echo $type ?>:</strong> <?php echo $message ?></p>
