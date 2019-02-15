@@ -11,7 +11,7 @@ class Controller_Index extends Controller {
     
     private $_errors = [];
     
-    private $reflection;
+    private $reflection = false;
     
     public function __construct() 
     {

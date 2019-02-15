@@ -16,31 +16,39 @@
 </form>
 
 <?php if (isset($reflection)) { ?>
-    <?php if ($reflection) { ?>
+    <?php if (!empty($reflection)) { ?>
         <section class="mt-5">
             <code>
                 <?php if ($reflection->getNamespaceName()) { ?>
                     <p>namespace <?= $reflection->getNamespaceName(); ?>;</p>
                 <?php } ?>
                 
-                <p>
-                    interface <?= $reflection->getName() ?>Interface
-                    <?php if ($reflection->getInterfaces()) { ?>
-                        extends
-                        <?php $i = 1; foreach ($reflection->getInterfaces() as $interface => $val) { ?>
-                            <?= $interface ?><?= $i < count($reflection->getInterfaces()) ? ',' : '&nbsp;' ?>
-                            <?php $i++ ?>
-                        <?php } ?>
-                    <?php } ?>
-                    &#123;
-                </p>
+                <p>interface <?= $reflection->getShortName() ?>Interface &#123;</p>
                 
                 <?php if ($reflection->getMethods()) { ?>
                     <?php foreach ($reflection->getMethods() as $method) { ?>
                         <?php if ($method->isPublic()) { ?>
                             <p class="ml-5">
-                                public function <?= $method->name ?>();
-                                <?php print_r($method->getParameters()) ?>
+                                <?= $method->isAbstract() ? 'abstract ' : null ?>
+                                public function <?= $method->name ?>
+                                
+                                <!-- Аргументы -->
+                                <?php if ($method->getParameters()) { ?>
+                                    (
+                                    <?php foreach ($method->getParameters() as $parament) { ?>
+                                        <?= $parament->getType() ?: 'mixed' ?> &#36;<?= $parament->name ?>
+                                    <?php } ?>
+                                    ) :
+                                <?php } else { ?>
+                                    () :
+                                <?php } ?>
+                                    
+                                <!-- Возвращаемое значение -->
+                                <?php if ($method->getReturnType()) { ?>
+                                    <?= $method->getReturnType() ?>;
+                                <?php } else { ?>
+                                    mixed;
+                                <?php } ?>
                             </p>
                         <?php } ?>
                     <?php } ?>
