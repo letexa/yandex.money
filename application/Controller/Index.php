@@ -9,7 +9,9 @@ class Controller_Index extends Controller {
     
     protected $_template = 'layouts/index';
     
-    const DIR = DOCROOT . '/public/uploads';
+    private $_errors = [];
+    
+    private $reflection;
     
     public function __construct() 
     {
@@ -23,10 +25,8 @@ class Controller_Index extends Controller {
     */
     public function action_index() 
     {
-        $this->_content['content'] = View::factory('index/main')->execute();
-
         if ($_FILES) {
-            $storage = new \Upload\Storage\FileSystem(self::DIR);
+            $storage = new \Upload\Storage\FileSystem(UPLOADS);
             $file = new \Upload\File('file', $storage);
             
             $new_filename = uniqid();
@@ -39,12 +39,23 @@ class Controller_Index extends Controller {
             
             try {
                 $file->upload();
+                $classes = get_declared_classes();
+                require_once UPLOADS .'/'. $file->getNameWithExtension();
+                $diff = array_diff(get_declared_classes(), $classes);
+                if ($diff) {
+                    $this->reflection = new ReflectionClass(reset($diff));
+                }
             } catch (\Exception $e) {
-                $errors = $file->getErrors();
-                print_r($errors);
+                $this->_errors = $file->getErrors();
             }
-            
         }
+        
+        $view = View::factory('index/main')->set('errors', $this->_errors);
+        $this->_content['content'] = View::factory('index/main')->set('errors', $this->_errors);
+        if ($_FILES) {
+            $view->set('reflection', $this->reflection);
+        }
+        $this->_content['content'] = $view->execute();
     }
     
 }

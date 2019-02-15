@@ -17,6 +17,7 @@ $lib = __DIR__ . '/lib';
 $classes = __DIR__ . '/classes';
 
 define('DOCROOT', realpath(dirname(__FILE__)).DIRECTORY_SEPARATOR);
+define('UPLOADS', DOCROOT . '/uploads');
 
 if ( ! is_dir($application) && is_dir(DOCROOT.$application))
 	$application = DOCROOT.$application;
